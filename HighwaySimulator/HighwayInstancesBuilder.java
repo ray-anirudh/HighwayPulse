@@ -2,6 +2,9 @@ import Utils.CoordinatesDistances;
 import Utils.DateTimeListReader;
 import Utils.XYToDistances;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class HighwayInstancesBuilder {
@@ -39,9 +42,53 @@ public class HighwayInstancesBuilder {
         LinkedHashMap<Integer, CoordinatesDistances> distanceVsCoordinatesMapFromAgr = xYToDistances.
                 getDistanceVsCoordinatesMapFromAgr();
 
+        String outputFilePathBase = "D:/Documents - Education + Work/Assignment - CEEW/Data/" +
+                "MobileVehicleInstances_11.2024/MobileVehicleInstances";
+        int counter = 1;
+
         for (long secondsValueForVisualizingVehicleLocations : secondsForVisualizingVehicleLocations) {
-            generateMobileVehicles(plazaLaneWiseVehicleTollingInstances, secondsValueForVisualizingVehicleLocations,
+            String mobileVehicleInstancesFilePath = outputFilePathBase + counter + ".csv";
+            LinkedHashMap<String, MobileVehicleInstance> mobileVehicleInstances = generateMobileVehicles
+                    (plazaLaneWiseVehicleTollingInstances, secondsValueForVisualizingVehicleLocations,
                     distanceVsCoordinatesMapFromDel, distanceVsCoordinatesMapFromAgr);
+            writeVehicleInstanceData(mobileVehicleInstancesFilePath, mobileVehicleInstances);
+            counter++;
+        }
+    }
+
+    private static void writeVehicleInstanceData(String vehicleInstanceDataFilePath,
+                                                 LinkedHashMap<String, MobileVehicleInstance>
+                                                         mobileVehicleInstances) {
+        try {
+            // Writer for a CSV file containing vehicular coordinates and other information
+            BufferedWriter vehicleInstanceWriter = new BufferedWriter(new FileWriter(vehicleInstanceDataFilePath));
+
+            // Write out the header
+            vehicleInstanceWriter.write("VehRegNo,VehClass,AscribedSpeed_ms,PlazaName,LaneNo,TravelDirection," +
+                    "TransactionTime_s,PrecVehTransactionTime_s,RankInQueue,TimeAtPlaza_s,DistFromDestAtStipTime_m," +
+                    "AscribedXCoordinateStipTime7760,AscribedYCoordinateStipTime7760\n");
+
+            // Write out data
+            for (MobileVehicleInstance mobileVehicleInstance : mobileVehicleInstances.values()) {
+                vehicleInstanceWriter.write(mobileVehicleInstance.getVehicleRegistration() + "," +
+                        mobileVehicleInstance.getEmployeeSpecifiedVehicleClass() + "," +
+                        mobileVehicleInstance.getVehicleSpeedMPS() + "," +
+                        mobileVehicleInstance.getTollPlaza() + "," +
+                        mobileVehicleInstance.getLaneNumber() + "," +
+                        mobileVehicleInstance.getDirectionId() + "," +
+                        mobileVehicleInstance.getTransactionTimeSeconds() + "," +
+                        mobileVehicleInstance.getPrecedingVehicleTransactionTimeSeconds() + "," +
+                        mobileVehicleInstance.getRankInQueue() + "," +
+                        mobileVehicleInstance.getTimeSpentAtPlazaInSeconds() + "," +
+                        mobileVehicleInstance.getDistanceFromDestinationAtStipulatedTime() + "," +
+                        mobileVehicleInstance.getAscribedXCoordinateAtStipulatedTime() + "," +
+                        mobileVehicleInstance.getAscribedYCoordinateAtStipulatedTime() + "\n");
+            }
+
+            System.out.println("Data of mobile vehicle instances written to " + vehicleInstanceDataFilePath);
+
+        } catch (IOException iOE) {
+            System.out.println("Input-output exception; please check the hashmap of mobile vehicle instances.");
         }
     }
 
@@ -109,22 +156,28 @@ public class HighwayInstancesBuilder {
                     if ((distanceFromDestinationAtStipulatedTime >= 0) && (distanceFromDestinationAtStipulatedTime <=
                             DELHI_TO_AGRA_DIST_M)) {
                         if (directionId.equalsIgnoreCase("DA")) {
-                            mobileVehicleInstance.setAscribedXCoordinateAtStipulatedTime(
-                                    distanceVsCoordinatesMapFromDel.get(distanceFromDestinationAtStipulatedTime).
-                                            getXCoordinate());
-                            mobileVehicleInstance.setAscribedYCoordinateAtStipulatedTime(
-                                    distanceVsCoordinatesMapFromDel.get(distanceFromDestinationAtStipulatedTime).
-                                            getYCoordinate());
-                        } else if (directionId.equalsIgnoreCase("AD")) {
-                            mobileVehicleInstance.setAscribedXCoordinateAtStipulatedTime(
-                                    distanceVsCoordinatesMapFromAgr.get(distanceFromDestinationAtStipulatedTime).
-                                            getXCoordinate());
-                            mobileVehicleInstance.setAscribedYCoordinateAtStipulatedTime(
-                                    distanceVsCoordinatesMapFromAgr.get(distanceFromDestinationAtStipulatedTime).
-                                            getYCoordinate());
-                        }
+                            CoordinatesDistances locationForDADirection = distanceVsCoordinatesMapFromDel.get(
+                                    distanceFromDestinationAtStipulatedTime);
+                            if (locationForDADirection != null) {
+                                mobileVehicleInstance.setAscribedXCoordinateAtStipulatedTime(locationForDADirection.
+                                        getXCoordinate());
+                                mobileVehicleInstance.setAscribedYCoordinateAtStipulatedTime(locationForDADirection.
+                                        getYCoordinate());
 
-                        mobileVehicleInstanceMap.put(vehicleRegistration, mobileVehicleInstance);
+                                mobileVehicleInstanceMap.put(vehicleRegistration, mobileVehicleInstance);
+                            }
+                        } else if (directionId.equalsIgnoreCase("AD")) {
+                            CoordinatesDistances locationForADDirection = distanceVsCoordinatesMapFromAgr.get(
+                                    distanceFromDestinationAtStipulatedTime);
+                            if (locationForADDirection != null) {
+                                mobileVehicleInstance.setAscribedXCoordinateAtStipulatedTime(locationForADDirection.
+                                        getXCoordinate());
+                                mobileVehicleInstance.setAscribedYCoordinateAtStipulatedTime(locationForADDirection.
+                                        getYCoordinate());
+
+                                mobileVehicleInstanceMap.put(vehicleRegistration, mobileVehicleInstance);
+                            }
+                        }
                     }
 
                     /* Debug: Check data records subject to conditionality

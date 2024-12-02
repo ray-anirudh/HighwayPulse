@@ -53,12 +53,11 @@ public class XYToDistances {
                 CoordinatesDistances coordinatesDistances = new CoordinatesDistances(xCoordinate, yCoordinate,
                         cumulativeDistanceFromDelhi, (DELHI_AGRA_DISTANCE_M - cumulativeDistanceFromDelhi));
 
-                /* Debug: Check data record
+                /* Debug: Check data records
                 System.out.println("X-coordinate: " + xCoordinate + "\n" +
                          "Y-coordinate: " + yCoordinate + "\n" +
                          "Distance from Delhi: " + cumulativeDistanceFromDelhi + "\n" +
                          "Distance from Agra: " + (DELHI_AGRA_DISTANCE_M - cumulativeDistanceFromDelhi) + "\n");
-
                 */
 
                 this.distanceVsCoordinatesMapFromDel.put((int) cumulativeDistanceFromDelhi, coordinatesDistances);

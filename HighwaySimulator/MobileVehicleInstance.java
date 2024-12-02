@@ -48,12 +48,24 @@ public class MobileVehicleInstance {
         this.ascribedYCoordinateAtStipulatedTime = yCoordinateAtStipulatedTime;
     }
 
+    public String getVehicleRegistration() {
+        return vehicleRegistration;
+    }
+
+    public String getEmployeeSpecifiedVehicleClass() {
+        return employeeSpecifiedVehicleClass;
+    }
+
     public double getVehicleSpeedMPS() {
         return this.vehicleSpeedMPS;
     }
 
     public String getTollPlaza() {
         return this.tollPlaza;
+    }
+
+    public int getLaneNumber() {
+        return laneNumber;
     }
 
     public String getDirectionId() {
@@ -64,8 +76,20 @@ public class MobileVehicleInstance {
         return this.transactionTimeSeconds;
     }
 
+    public long getPrecedingVehicleTransactionTimeSeconds() {
+        return precedingVehicleTransactionTimeSeconds;
+    }
+
+    public int getRankInQueue() {
+        return rankInQueue;
+    }
+
     public double getTimeSpentAtPlazaInSeconds() {
         return this.timeSpentAtPlazaInSeconds;
+    }
+
+    public int getDistanceFromDestinationAtStipulatedTime() {
+        return distanceFromDestinationAtStipulatedTime;
     }
 
     public double getAscribedXCoordinateAtStipulatedTime() {
