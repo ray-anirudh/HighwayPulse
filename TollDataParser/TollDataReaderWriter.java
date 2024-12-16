@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 public class TollDataReaderWriter {
+     // Functionality on point - 16.12.2024
+
      /**
       * Attribute definitions
       */
@@ -88,6 +90,13 @@ public class TollDataReaderWriter {
                             Long.parseLong(transactionTime.substring(0, 2)) * SECONDS_IN_HOUR +
                             Long.parseLong(transactionTime.substring(3, 5)) * SECONDS_IN_MINUTE +
                             Long.parseLong(transactionTime.substring(6, 8));
+                    /* Debugging statements:
+                    System.out.println("\n" +
+                            "Transaction date: " + transactionDate + "\n" +
+                            "Transaction time: " + transactionTime + "\n" +
+                            "Transaction time seconds: " + transactionTimeSeconds + "\n");
+                    */
+
                     int roadUsageFare = Integer.parseInt(tollingDataRecord[roadUsageFareIndex]);
                     int overloadingFare = Integer.parseInt(tollingDataRecord[overloadingFareIndex]);
                     int penaltyFare = Integer.parseInt(tollingDataRecord[penaltyFareIndex]);

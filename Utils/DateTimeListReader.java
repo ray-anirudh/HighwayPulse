@@ -2,9 +2,10 @@ package Utils;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DateTimeListReader {
+    // Functionality on point - 16.12.2024
+
     public ArrayList<Long> secondsForVisualizingVehicleLocations = new ArrayList<>();
     // Stores temporal values in seconds as the time stamps for which highway instances are to be created
 

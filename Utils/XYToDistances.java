@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 
 public class XYToDistances {
+    // Functionality on point - 16.12.2024
 
     /**
      *  Attribute definitions
@@ -45,9 +46,9 @@ public class XYToDistances {
                 double yCoordinate = Double.parseDouble(XYDataRecord[yCoordinateIndex]);
 
                 if (precedingYCoordinate != 0) {
-                    cumulativeDistanceFromDelhi += Math.sqrt(((xCoordinate - precedingXCoordinate) * (xCoordinate -
-                            precedingXCoordinate)) + ((yCoordinate - precedingYCoordinate) * (yCoordinate -
-                            precedingYCoordinate)));
+                    double xDistance = xCoordinate - precedingXCoordinate;
+                    double yDistance = yCoordinate - precedingYCoordinate;
+                    cumulativeDistanceFromDelhi += Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
                 }
 
                 CoordinatesDistances coordinatesDistances = new CoordinatesDistances(xCoordinate, yCoordinate,
