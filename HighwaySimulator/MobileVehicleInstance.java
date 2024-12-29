@@ -1,11 +1,13 @@
+import HaltingPointDataParser.HaltingPointInstance;
+
 public class MobileVehicleInstance {
     private String vehicleRegistration;
     private String employeeSpecifiedVehicleClass;
     private boolean isEV;
     private double assignedVehicleSpeedMPS;
-    private double actualVehicleSpeedMPS;
+    private double actualVehicleSpeedMPS;   // Distribution must explicitly trail the one for assigned speeds
     private boolean didVehicleHalt;
-    private double haltingDurationMins;
+    private double haltingDurationSecs;
     private double vehicleBatteryCapacityKWh;
     private double vehicleFuelEconomyKWhPKm;
     private double vehicleStartingSoCPercent;
@@ -24,19 +26,20 @@ public class MobileVehicleInstance {
     private int rankInQueue;
     // Also flags whether queuing occurs
     private double timeSpentAtPlazaInSeconds;
-    private int distanceFromDestinationAtStipulatedTime;
+    private int distanceFromOriginAtStipulatedTime;
     private double ascribedXCoordinateAtStipulatedTime;
     private double ascribedYCoordinateAtStipulatedTime;
+    private HaltingPointInstance nearestHaltingPointInstance;
 
     MobileVehicleInstance(String vehicleRegistration, String employeeSpecifiedVehicleClass, boolean isEV,
                           double assignedVehicleSpeedMPS, double actualVehicleSpeedMPS, boolean didVehicleHalt,
-                          double haltingDurationMins, double vehicleBatteryCapacityKWh, double vehicleFuelEconomyKWhPKm,
+                          double haltingDurationSecs, double vehicleBatteryCapacityKWh, double vehicleFuelEconomyKWhPKm,
                           double vehicleStartingSoCPercent, double vehicleCurrentSoCLevelPercent,
                           double vehicleEnergyRequired, double vehicleChargingProbability, String tollPlaza,
                           int laneNumber, String directionId, long transactionTimeSeconds,
                           long estimatedArrivalTimeSeconds, long precedingVehicleTransactionTimeSeconds,
                           int rankInQueue, double timeSpentAtPlazaInSeconds,
-                          int distanceFromDestinationAtStipulatedTime, double ascribedXCoordinateAtStipulatedTime,
+                          int distanceFromOriginAtStipulatedTime, double ascribedXCoordinateAtStipulatedTime,
                           double ascribedYCoordinateAtStipulatedTime) {
         this.vehicleRegistration = vehicleRegistration;
         this.employeeSpecifiedVehicleClass = employeeSpecifiedVehicleClass;
@@ -44,7 +47,7 @@ public class MobileVehicleInstance {
         this.assignedVehicleSpeedMPS = assignedVehicleSpeedMPS;
         this.actualVehicleSpeedMPS = actualVehicleSpeedMPS;
         this.didVehicleHalt = didVehicleHalt;
-        this.haltingDurationMins = haltingDurationMins;
+        this.haltingDurationSecs = haltingDurationSecs;
         this.vehicleBatteryCapacityKWh = vehicleBatteryCapacityKWh;
         this.vehicleFuelEconomyKWhPKm = vehicleFuelEconomyKWhPKm;
         this.vehicleStartingSoCPercent = vehicleStartingSoCPercent;
@@ -59,13 +62,13 @@ public class MobileVehicleInstance {
         this.precedingVehicleTransactionTimeSeconds = precedingVehicleTransactionTimeSeconds;
         this.rankInQueue = rankInQueue;
         this.timeSpentAtPlazaInSeconds = timeSpentAtPlazaInSeconds;
-        this.distanceFromDestinationAtStipulatedTime = distanceFromDestinationAtStipulatedTime;
+        this.distanceFromOriginAtStipulatedTime = distanceFromOriginAtStipulatedTime;
         this.ascribedXCoordinateAtStipulatedTime = ascribedXCoordinateAtStipulatedTime;
         this.ascribedYCoordinateAtStipulatedTime = ascribedYCoordinateAtStipulatedTime;
     }
 
-    public void setDistanceFromDestinationAtStipulatedTime(int distanceFromDestinationAtStipulatedTime) {
-        this.distanceFromDestinationAtStipulatedTime = distanceFromDestinationAtStipulatedTime;
+    public void setDistanceFromOriginAtStipulatedTime(int distanceFromOriginAtStipulatedTime) {
+        this.distanceFromOriginAtStipulatedTime = distanceFromOriginAtStipulatedTime;
     }
 
     public void setAscribedXCoordinateAtStipulatedTime(double xCoordinateAtStipulatedTime) {
@@ -86,6 +89,10 @@ public class MobileVehicleInstance {
 
     public void setVehicleChargingProbability(double vehicleChargingProbability) {
         this.vehicleChargingProbability = vehicleChargingProbability;
+    }
+
+    public void setNearestHaltingPointInstance(HaltingPointInstance nearestHaltingPointInstance) {
+        this.nearestHaltingPointInstance = nearestHaltingPointInstance;
     }
 
     public String getVehicleRegistration() {
@@ -112,8 +119,8 @@ public class MobileVehicleInstance {
         return this.didVehicleHalt;
     }
 
-    public double getHaltingDurationMins() {
-        return this.haltingDurationMins;
+    public double getHaltingDurationSecs() {
+        return this.haltingDurationSecs;
     }
 
     public double getVehicleBatteryCapacityKWh() {
@@ -172,8 +179,8 @@ public class MobileVehicleInstance {
         return this.timeSpentAtPlazaInSeconds;
     }
 
-    public int getDistanceFromDestinationAtStipulatedTime() {
-        return distanceFromDestinationAtStipulatedTime;
+    public int getDistanceFromOriginAtStipulatedTime() {
+        return distanceFromOriginAtStipulatedTime;
     }
 
     public double getAscribedXCoordinateAtStipulatedTime() {
@@ -182,5 +189,9 @@ public class MobileVehicleInstance {
 
     public double getAscribedYCoordinateAtStipulatedTime() {
         return this.ascribedYCoordinateAtStipulatedTime;
+    }
+
+    public HaltingPointInstance getNearestHaltingPointInstance() {
+        return this.nearestHaltingPointInstance;
     }
 }

@@ -57,7 +57,6 @@ public class DateTimeListReader {
     private int findIndexInArray(String columnHeaderName, String[] columnHeaderArray) {
         int columnIndex = -1;
         for (int i = 0; i < columnHeaderArray.length; i++) {
-
             // Address Byte Order Mark characters (unprintable), if present
             columnHeaderArray[i] = columnHeaderArray[i].replaceAll("[^\\p{Print}]", "");
 

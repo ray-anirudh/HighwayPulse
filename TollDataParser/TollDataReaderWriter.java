@@ -41,9 +41,11 @@ public class TollDataReaderWriter {
                int vehicleFASTagIdIndex = findIndexInArray("TagID", tollDataHeaderArray);
                int vehicleWeightInMotionIndex = findIndexInArray("WIMweight", tollDataHeaderArray);
                int vehicleWeightStaticIndex = findIndexInArray("StaticWimWeight", tollDataHeaderArray);
-               int permissibleVehicleWeightStaticIndex = findIndexInArray("PermisibleWeight", tollDataHeaderArray);
+               int permissibleVehicleWeightStaticIndex = findIndexInArray("PermisibleWeight",
+                       tollDataHeaderArray);
                int autoIdentifiedVehicleClassIndex = findIndexInArray("AVCClass", tollDataHeaderArray);
-               int employeeSpecifiedVehicleClassIndex = findIndexInArray("SVCClass", tollDataHeaderArray);
+               int employeeSpecifiedVehicleClassIndex = findIndexInArray("SVCClass",
+                       tollDataHeaderArray);
 
                int transactionIdIndex = findIndexInArray("TransactionID", tollDataHeaderArray);
                int bankTransactionIdIndex = findIndexInArray("BankTransactionId", tollDataHeaderArray);
@@ -53,7 +55,8 @@ public class TollDataReaderWriter {
                int overloadingFareIndex = findIndexInArray("OverloadedFare", tollDataHeaderArray);
                int penaltyFareIndex = findIndexInArray("PenaltyFare", tollDataHeaderArray);
                int paymentModeIndex = findIndexInArray("PaymentMethod", tollDataHeaderArray);
-               int transactionRemarkIndex = findIndexInArray("TransactionDescription", tollDataHeaderArray);
+               int transactionRemarkIndex = findIndexInArray("TransactionDescription",
+                       tollDataHeaderArray);
                int journeyTypeIndex = findIndexInArray("JourneyType", tollDataHeaderArray);
 
                int employeeIdIndex = findIndexInArray("UserId", tollDataHeaderArray);
@@ -86,7 +89,7 @@ public class TollDataReaderWriter {
                     String transactionTime = tollingDataRecord[transactionTimeIndex];
                     long transactionTimeSeconds = Long.parseLong(transactionDate.substring(0, 4)) * SECONDS_IN_YEAR +
                             Long.parseLong(transactionDate.substring(5, 7)) * SECONDS_IN_MONTH +
-                            Long.parseLong(transactionDate.substring(8)) * SECONDS_IN_DAY +
+                            Long.parseLong(transactionDate.substring(8, 10)) * SECONDS_IN_DAY +
                             Long.parseLong(transactionTime.substring(0, 2)) * SECONDS_IN_HOUR +
                             Long.parseLong(transactionTime.substring(3, 5)) * SECONDS_IN_MINUTE +
                             Long.parseLong(transactionTime.substring(6, 8));
