@@ -58,7 +58,7 @@ Example file: PointsOfInterestNH44.csv
 
 4. Outputs of the Program
 
-JTDA produces two primary outputs:
+HighwayPulse produces two primary outputs:
 
 a. Mobile Vehicle Instances
 
