@@ -1,8 +1,8 @@
-JTollDataAnalyzer (JTDA) README
+HighwayPulse README
 
 1. What It Does
 
-The JTollDataAnalyzer (JTDA) is a Java-based data processing pipeline developed to analyze tolling microdata, geospatial data, and vehicle metrics. It generates detailed insights into traffic state estimation, charging infrastructure planning, and EV simulations for highway sections. Key use cases include:
+The HighwayPulse is a Java-based data processing pipeline developed to analyze tolling microdata, geospatial data, and vehicle metrics. It generates detailed insights into traffic state estimation, charging infrastructure planning, and EV simulations for highway sections. Key use cases include:
 
 Traffic state estimation: Understand vehicle behavior on highways over time.
 
@@ -10,7 +10,7 @@ EV infrastructure planning: Identify optimal locations for electric vehicle char
 
 Energy demand simulations: Estimate energy requirements and charging probabilities for vehicles.
 
-JTDA is versatile and applicable to any road stretch in India with similar inputs.
+HighwayPulse is versatile and applicable to any road stretch in India with similar inputs.
 
 2. Salient Features
 
@@ -26,7 +26,7 @@ Transferability: Easily adapted for other highway sections with diverse datasets
 
 3. Inputs to the Program
 
-JTDA requires several datasets in machine-readable formats (CSV, XML, TXT, etc.):
+HighwayPulse requires several datasets in machine-readable formats (CSV, XML, TXT, etc.):
 
 a. Tolling Microdata
 
