@@ -20,9 +20,10 @@ public class HaltingPointInstance {
     private double powerOutputRequired;
 
     public HaltingPointInstance(int haltingPointId, String haltingPointDescription, double haltingPointLatitude,
-                                double haltingPointLongitude, String haltingPointCategory, String haltingPointSubCategory,
-                                String haltingPointDataCollectionTime, double chargerDowntime,
-                                double chargerCapacityUtilization, double chargerCount, double totalChargerOutputKW) {
+                                double haltingPointLongitude, String haltingPointCategory,
+                                String haltingPointSubCategory, String haltingPointDataCollectionTime,
+                                double chargerDowntime, double chargerCapacityUtilization, double chargerCount,
+                                double totalChargerOutputKW) {
         this.haltingPointId = haltingPointId;
         this.haltingPointDescription = haltingPointDescription;
         this.haltingPointLatitude = haltingPointLatitude;

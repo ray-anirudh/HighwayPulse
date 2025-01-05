@@ -59,9 +59,9 @@ public class HighwayInstancesBuilder {
 
         // Ready output file bases
         String mobileVehicleInstancesOutputFilePathsBase = "D:/Documents - Education + Work/Assignment - CEEW/Data/" +
-                "MobileVehicleInstances_11.2024/MobileVehicleInstances";
+                "MobileVehicleInstances_11.2024DBS/MobileVehicleInstancesDBS";
         String haltingPointInstancesOutputFilePathsBase = "D:/Documents - Education + Work/Assignment - CEEW/Data/" +
-                "HaltingPointInstances_12.2024/HaltingPointInstances";
+                "HaltingPointInstances_12.2024DBS/HaltingPointInstancesDBS";
         int counter = 0;    // To number files by date-time stamps
 
         // Build sequences of mobileVehicle- and haltingPointInstances on highways
@@ -81,23 +81,18 @@ public class HighwayInstancesBuilder {
             mobileVehicleInstancesByTimeStamps.add(mobileVehicleInstances);
             writeVehicleInstanceData(mobileVehicleInstancesFilePath, mobileVehicleInstances);
 
-//            /* Generate a map of mobile vehicle instances for the time stamp under consideration, add them to the
-//               master list, and write them out into a CSV
-//            */
-//            LinkedHashMap<String, MobileVehicleInstance> mobileVehicleInstances = generateMobileVehicles
-//                    (plazaLaneWiseVehicleTollingInstances, secondsValueForInstanceBuilding, secondsForBuildingInstances,
-//                            distanceVsCoordinatesMapFromDel, distanceVsCoordinatesMapFromAgr,
-//                            mobileVehicleInstancesByTimeStamps);
-//            mobileVehicleInstancesByTimeStamps.add(mobileVehicleInstances);
-//            writeVehicleInstanceData(mobileVehicleInstancesFilePath, mobileVehicleInstances);
+            /* Generate a map of halting point instances for the time stamp under consideration, add them to the
+               master list, and write them out into a CSV
+            */
+            LinkedHashMap<Integer, HaltingPointInstance> haltingPointInstances = buildHaltingPointInstances(
+                    haltingPointsMap, mobileVehicleInstances);
+            haltingPointInstancesByTimeStamps.add(haltingPointInstances);
+            writeHaltingPointInstances(haltingPointInstancesFilePath, haltingPoints);
         }
-
-        System.exit(1);
-        java.awt.Toolkit.getDefaultToolkit().beep();
 
         String haltingPointDataFilePath = "D:/Documents - Education + Work/Assignment - CEEW/Data/" +
                 "haltingPointsNH44.csv";
-        haltingPointReaderWriter.writeHaltingPointData(haltingPointDataFilePath);
+
     }
 
     private static void writeVehicleInstanceData(String vehicleInstanceDataFilePath,
@@ -110,10 +105,10 @@ public class HighwayInstancesBuilder {
             // Write out the header
             vehicleInstanceWriter.write("VehRegNo,VehClass,isEV,AscribedSpeed_ms,ActualSpeed_ms,DidVehicleHalt," +
                     "HaltingDuration_secs,BatteryCapacity_kWh,FuelEconomy_kWhPerKm,StartingSoC_percent," +
-                    "CurrentSoC_percent,EnergyRequired_kWh,ChargingProbability,EstimatedArrivalTime_s,PlazaName," +
-                    "LaneNo,TravelDirection,TransactionTime_s,PrecVehTransactionTime_s,RankInQueue,TimeAtPlaza_s," +
-                    "DistFromDestAtStipTime_m,AscribedXCoordinateStipTime,AscribedYCoordinateStipTime," +
-                    "NearestHaltingPointInstance\n");
+                    "CurrentSoC_percent,EnergyRequired_kWh,ChargingProbability,EstimatedArrivalTime_secs,PlazaName," +
+                    "LaneNo,TravelDirection,TransactionTime_secs,PrecVehTransactionTime_secs,RankInQueue," +
+                    "TimeAtPlaza_secs,DistFromDestAtStipTime_m,AscribedXCoordinateStipTime," +
+                    "AscribedYCoordinateStipTime,NearestHaltingPointID\n");
 
             // Write out data
             for (MobileVehicleInstance mobileVehicleInstance : mobileVehicleInstances.values()) {
@@ -142,9 +137,8 @@ public class HighwayInstancesBuilder {
                                 mobileVehicleInstance.getDistanceFromOriginAtStipulatedTime() + "," +
                                 mobileVehicleInstance.getAscribedXCoordinateAtStipulatedTime() + "," +
                                 mobileVehicleInstance.getAscribedYCoordinateAtStipulatedTime() + "," +
-                                (mobileVehicleInstance.getNearestHaltingPointInstance() != null
-                                        ? mobileVehicleInstance.getNearestHaltingPointInstance().toString() :
-                                        "None") + "\n");
+                                mobileVehicleInstance.getNearestHaltingPointInstance().getHaltingPointId() +
+                                "\n");
             }
 
             vehicleInstanceWriter.close();
@@ -159,31 +153,31 @@ public class HighwayInstancesBuilder {
                                                    List<HaltingPointInstance> haltingPointInstances) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // Write the header
-            writer.write("HaltingPointId,HaltingPointDescription,Latitude,Longitude,Category,SubCategory," +
-                    "DataCollectionTime,ChargerDowntime,ChargerCapacityUtilization,ChargerCount,TotalChargerOutputKW," +
-                    "AggregateChargingDemandKWh,AverageChargingProbability,AverageHaltingDuration," +
-                    "PassengerVehicleCount,FreightVehicleCount,PowerOutputRequired\n");
+            writer.write("HaltingPointId,HaltingPointDescription,YCoordinate,XCoordinate,Category,SubCategory," +
+                    "DataCollectionTime,ChargerDowntime_mins,ChargerCapacityUtilization_percent,ChargerCount," +
+                    "TotalChargerOutputkW,AggregateChargingDemandKWh,AverageChargingProbability," +
+                    "AverageHaltingDuration_secs,PassengerVehicleCount,FreightVehicleCount,PowerOutputRequired_kW\n");
 
             // Write the data
             for (HaltingPointInstance instance : haltingPointInstances) {
                 writer.write(
                         instance.getHaltingPointId() + "," +
-                                instance.getHaltingPointDescription() + "," +
-                                instance.getHaltingPointLatitude() + "," +
-                                instance.getHaltingPointLongitude() + "," +
-                                instance.getHaltingPointCategory() + "," +
-                                instance.getHaltingPointSubCategory() + "," +
-                                instance.getHaltingPointDataCollectionTime() + "," +
-                                instance.getChargerDowntime() + "," +
-                                instance.getChargerCapacityUtilization() + "," +
-                                instance.getChargerCount() + "," +
-                                instance.getTotalChargerOutputKW() + "," +
-                                instance.getAggregateChargingDemandKWh() + "," +
-                                instance.getAverageVehicleChargingProbability() + "," +
-                                instance.getAverageVehicleHaltingDuration() + "," +
-                                instance.getPassengerVehicleCountDesiringCharge() + "," +
-                                instance.getFreightVehicleCountDesiringCharge() + "," +
-                                instance.getPowerOutputRequired() + "\n"
+                            instance.getHaltingPointDescription() + "," +
+                            instance.getHaltingPointLongitude() + "," +
+                            instance.getHaltingPointLatitude() + "," +
+                            instance.getHaltingPointCategory() + "," +
+                            instance.getHaltingPointSubCategory() + "," +
+                            instance.getHaltingPointDataCollectionTime() + "," +
+                            instance.getChargerDowntime() + "," +
+                            instance.getChargerCapacityUtilization() + "," +
+                            instance.getChargerCount() + "," +
+                            instance.getTotalChargerOutputKW() + "," +
+                            instance.getAggregateChargingDemandKWh() + "," +
+                            instance.getAverageVehicleChargingProbability() + "," +
+                            instance.getAverageVehicleHaltingDuration() + "," +
+                            instance.getPassengerVehicleCountDesiringCharge() + "," +
+                            instance.getFreightVehicleCountDesiringCharge() + "," +
+                            instance.getPowerOutputRequired() + "\n"
                 );
             }
             System.out.println("Data of halting points written to " + filePath);
@@ -296,11 +290,17 @@ public class HighwayInstancesBuilder {
                                 long temporalGapSeconds = secondsForBuildingInstances.get(
                                         mobileVehicleInstancesByTimeStamps.size() - 1) -
                                         secondsValueForBuildingInstances;
+                                int criticalSoCLevel = 15;
+                                int maxSoCLevel = 100;
 
                                 // Handle negatives here if needed
-                                vehicleCurrentSoCLevelPercent = 95 * (vehicleFuelEconomyKWhPKm / 1_000) *
-                                        (assignedVehicleSpeedMPS * temporalGapSeconds) / vehicleBatteryCapacityKWh;
-                                vehicleEnergyRequired = vehicleBatteryCapacityKWh * (0.95 -
+                                vehicleCurrentSoCLevelPercent = 100 - (100 * (vehicleFuelEconomyKWhPKm / 1_000) *
+                                        (assignedVehicleSpeedMPS * temporalGapSeconds) / vehicleBatteryCapacityKWh);
+                                vehicleCurrentSoCLevelPercent = Math.max(vehicleCurrentSoCLevelPercent,
+                                        criticalSoCLevel);
+                                vehicleCurrentSoCLevelPercent = Math.min(vehicleCurrentSoCLevelPercent, maxSoCLevel);
+
+                                vehicleEnergyRequired = vehicleBatteryCapacityKWh * (1 -
                                         (vehicleCurrentSoCLevelPercent / 100)); // 95% is the desired and healthy SoC
                                 vehicleChargingProbability = vehicleEnergyRequired / vehicleBatteryCapacityKWh;
                             }
@@ -420,9 +420,11 @@ public class HighwayInstancesBuilder {
                                 vehicleEnergyRequired = getVehicleEnergyRequired(vehicleCurrentSoCLevelPercent,
                                         vehicleBatteryCapacityKWh);
                                 vehicleChargingProbability = vehicleEnergyRequired / vehicleBatteryCapacityKWh;
-                                // System.out.println(vehicleCurrentSoCLevelPercent);
-                                // System.out.println(vehicleEnergyRequired + employeeSpecifiedVehicleClass);
-                                // System.out.println(vehicleChargingProbability);
+                                /* Debugging statements:
+                                   System.out.println(vehicleCurrentSoCLevelPercent);
+                                   System.out.println(vehicleEnergyRequired + employeeSpecifiedVehicleClass);
+                                   System.out.println(vehicleChargingProbability);
+                                */
                             }
 
                             mobileVehicleInstance.setVehicleCurrentSoCLevelPercent(vehicleCurrentSoCLevelPercent);
@@ -486,22 +488,73 @@ public class HighwayInstancesBuilder {
         return mobileVehicleInstanceMap;
     }
 
-    // todo build a method that takes halting points, and a set of temporal points, and a set of mob vehicle instances, then
-    // for each timepoint, it calls the set of vehicle instances, sees which halting point is the nearest for each vehicle
-    // and returns an aggregate metric for the halting point
-    // will be nice if we can get a day-wide metric for each halting point
+    private static LinkedHashMap<Integer, HaltingPointInstance> buildHaltingPointInstances (
+            LinkedHashMap<Integer, HaltingPointInstance> haltingPointInstances,
+            LinkedHashMap<String, MobileVehicleInstance> mobileVehicleInstances
+            ) {
+        for (HaltingPointInstance haltingPointInstance : haltingPointInstances.values()) {
+            haltingPointInstance.setAggregateChargingDemandKWh(0);
+            haltingPointInstance.setAverageVehicleChargingProbability(0);
+            haltingPointInstance.setAverageVehicleHaltingDuration(0);
+            haltingPointInstance.setPassengerVehicleCountDesiringCharge(0);
+            haltingPointInstance.setFreightVehicleCountDesiringCharge(0);
+            haltingPointInstance.setPowerOutputRequired(0);
+        }
+
+        for (HashMap.Entry<String, MobileVehicleInstance> mobileVehicleInstanceEntry: mobileVehicleInstances.
+                entrySet()) {
+            MobileVehicleInstance mobileVehicleInstance = mobileVehicleInstanceEntry.getValue();
+            int haltingPointId = mobileVehicleInstance.getNearestHaltingPointInstance().getHaltingPointId();
+
+            HaltingPointInstance haltingPointInstance = haltingPointInstances.get(haltingPointId);
+            if (haltingPointInstance == null) continue; // Skip if halting point doesn't exist
+
+            if (mobileVehicleInstance.getVehicleChargingProbability() >= 0.65) {
+                // Set aggregate location-level metrics, based on the halting point a vehicle corresponds to
+                haltingPointInstance.setAggregateChargingDemandKWh(haltingPointInstance.getAggregateChargingDemandKWh() +
+                        mobileVehicleInstance.getVehicleEnergyRequired());
+
+                double totalAssociatedVehicles = haltingPointInstance.getPassengerVehicleCountDesiringCharge() +
+                        haltingPointInstance.getFreightVehicleCountDesiringCharge() + 1;
+
+                haltingPointInstance.setAverageVehicleChargingProbability(((haltingPointInstance.
+                        getAverageVehicleChargingProbability() * (totalAssociatedVehicles - 1)) + mobileVehicleInstance.
+                        getVehicleChargingProbability()) / totalAssociatedVehicles);
+                haltingPointInstance.setAverageVehicleHaltingDuration(((haltingPointInstance.
+                        getAverageVehicleHaltingDuration() * (totalAssociatedVehicles - 1)) + (mobileVehicleInstance.
+                        getHaltingDurationSecs())) / (totalAssociatedVehicles));
+
+                String eSVClass = mobileVehicleInstance.getEmployeeSpecifiedVehicleClass();
+                if ((eSVClass.equalsIgnoreCase("CarJeep")) || (eSVClass.equalsIgnoreCase("Bus"))) {
+                    haltingPointInstance.setPassengerVehicleCountDesiringCharge(haltingPointInstance.
+                            getPassengerVehicleCountDesiringCharge() + 1);
+                } else {
+                    haltingPointInstance.setFreightVehicleCountDesiringCharge(haltingPointInstance.
+                            getFreightVehicleCountDesiringCharge() + 1);
+                }
+
+                double averageChargerPower = haltingPointInstance.getPowerOutputRequired();
+                averageChargerPower = ((averageChargerPower * (totalAssociatedVehicles - 1)) + (mobileVehicleInstance.
+                        getVehicleEnergyRequired() / (mobileVehicleInstance.getHaltingDurationSecs() / 3_600)) /
+                        totalAssociatedVehicles);
+                haltingPointInstance.setPowerOutputRequired(averageChargerPower);
+            }
+        }
+
+        return haltingPointInstances;
+    }
 
     private static boolean makeEVOrNot(String SVCClass) {
         boolean isEV = false;
         Random eVMakerRandom = new Random();
         double eVDeciderValue = eVMakerRandom.nextFloat(1);
 
-        double eVPenetrationRateCarJeep = 0.4;
-        double eVPenetrationRateLCV = 0.2;
-        double eVPenetrationRateTruck = 0.1;
-        double eVPenetrationRateBus = 0.3;
-        double eVPenetrationRateMAV = 0.1;
-        double eVPenetrationRateTractor = 0.05;
+        double eVPenetrationRateCarJeep = 0.6;
+        double eVPenetrationRateLCV = 0.5;
+        double eVPenetrationRateTruck = 0.4;
+        double eVPenetrationRateBus = 0.5;
+        double eVPenetrationRateMAV = 0.2;
+        double eVPenetrationRateTractor = 0.1;
 
         switch (SVCClass) {
             case "CarJeep" -> {if (eVDeciderValue < eVPenetrationRateCarJeep) {isEV = true;}}
@@ -527,7 +580,7 @@ public class HighwayInstancesBuilder {
         if it is negative
         */
 
-        /* todo use Debugging statements:
+        /* Debugging statements:
         System.out.println(mobileVehicleInstance.getTransactionTimeSeconds());
         System.out.println(mobileVehicleInstance.getTimeSpentAtPlazaInSeconds());
         System.out.println(secondsValueForVisualizingVehicleLocations);
@@ -567,17 +620,17 @@ public class HighwayInstancesBuilder {
 
     private static double assignCurrentSoCLevel(double startingSoCLevel, double fuelEconomy, double batteryCapacity,
                                              int distanceTravelledM) {
-        double criticalSoCLevel = 10;
-        double maxSoCLevel = 95;
+        double criticalSoCLevel = 15;
+        double maxSoCLevel = 100;
         double mPerKm = 1_000;
-        double vehicleRange = 0.95 * batteryCapacity / fuelEconomy;
+        double vehicleRange = batteryCapacity / fuelEconomy;
 
         double distancePossibleViaStartingSoCLevel = (startingSoCLevel - criticalSoCLevel) / maxSoCLevel * vehicleRange
                 * mPerKm;
         double distancePossibleViaMaxSoCLevel = (maxSoCLevel - criticalSoCLevel) / maxSoCLevel * vehicleRange * mPerKm;
         double currentSoCLevel = 50;
 
-        if (distanceTravelledM < distancePossibleViaStartingSoCLevel) {
+        if (distanceTravelledM <= distancePossibleViaStartingSoCLevel) {
             currentSoCLevel = startingSoCLevel * (1 - (distanceTravelledM / distancePossibleViaStartingSoCLevel));
         } else {
             double selfManagedDistanceM = distanceTravelledM - distancePossibleViaStartingSoCLevel;
@@ -601,7 +654,7 @@ public class HighwayInstancesBuilder {
     }
 
     private static double getVehicleEnergyRequired(double currentSoCLevel, double batteryCapacity) {
-        double maxSoCLevel = 95;
+        double maxSoCLevel = 100;
         return batteryCapacity * (maxSoCLevel - currentSoCLevel) / 100;
     }
 
@@ -651,19 +704,19 @@ public class HighwayInstancesBuilder {
         }
 
         Random assignedBatteryCapacityRandom = new Random();
-        return assignedBatteryCapacityRandom.nextGaussian(averageVehicleBatteryCapacity, stdDevVehicleBatteryCapacity);
+        return assignedBatteryCapacityRandom.nextGaussian(averageVehicleBatteryCapacity * 2, stdDevVehicleBatteryCapacity);
     }
 
     private static double assignFuelEconomy(String SVCClass) {
         double averageVehicleFuelEconomy = 0.15;
         double stdDevVehicleFuelEconomy = 0.02;
         switch (SVCClass) {
-            case "CarJeep" -> {averageVehicleFuelEconomy = 0.18; stdDevVehicleFuelEconomy = 0.04;}
-            case "LCV" -> {averageVehicleFuelEconomy = 0.28; stdDevVehicleFuelEconomy = 0.03;}
-            case "Truck" -> {averageVehicleFuelEconomy = 0.80; stdDevVehicleFuelEconomy = 0.10;}
-            case "Bus" -> {averageVehicleFuelEconomy = 1.30; stdDevVehicleFuelEconomy = 0.40;}
-            case "MAV" -> {averageVehicleFuelEconomy = 1.75; stdDevVehicleFuelEconomy = 0.25;}
-            case "Tractor" -> {averageVehicleFuelEconomy = 1.2; stdDevVehicleFuelEconomy = 0.14;}
+            case "CarJeep" -> {averageVehicleFuelEconomy = 0.18; stdDevVehicleFuelEconomy = 0.025;}
+            case "LCV" -> {averageVehicleFuelEconomy = 0.28; stdDevVehicleFuelEconomy = 0.027;}
+            case "Truck" -> {averageVehicleFuelEconomy = 0.80; stdDevVehicleFuelEconomy = 0.102;}
+            case "Bus" -> {averageVehicleFuelEconomy = 1.30; stdDevVehicleFuelEconomy = 0.110;}
+            case "MAV" -> {averageVehicleFuelEconomy = 1.75; stdDevVehicleFuelEconomy = 0.125;}
+            case "Tractor" -> {averageVehicleFuelEconomy = 1.2; stdDevVehicleFuelEconomy = 0.085;}
         }
 
         Random assignedFuelEconomyRandom = new Random();
